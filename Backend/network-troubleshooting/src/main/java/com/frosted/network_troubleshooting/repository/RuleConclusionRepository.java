@@ -1,7 +1,10 @@
 package com.frosted.network_troubleshooting.repository;
 
-import com.frosted.network_troubleshooting.entity.User;
+import com.frosted.network_troubleshooting.entity.RuleConclusion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RuleConclusionRepository extends JpaRepository<User,Integer> {
+import java.util.List;
+
+public interface RuleConclusionRepository extends JpaRepository<RuleConclusion, Integer> {
+    List<RuleConclusion> findByRuleId(Integer ruleId);
 }
