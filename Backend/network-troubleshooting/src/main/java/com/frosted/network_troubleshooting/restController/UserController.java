@@ -1,10 +1,11 @@
 package com.frosted.network_troubleshooting.restController;
 
-import com.frosted.network_troubleshooting.service.UserService;
+import com.frosted.network_troubleshooting.dto.CreateUserRequest;
 import com.frosted.network_troubleshooting.entity.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.frosted.network_troubleshooting.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,7 +19,13 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userService.getAllUsers();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public User createUser(@Valid @RequestBody CreateUserRequest request) {
+        return userService.createUser(request.name(), request.email());
     }
 }

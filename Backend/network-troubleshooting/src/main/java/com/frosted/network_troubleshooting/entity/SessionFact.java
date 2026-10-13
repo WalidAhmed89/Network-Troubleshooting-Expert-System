@@ -19,7 +19,7 @@ public class SessionFact {
 
     @ManyToOne
     @JoinColumn(name = "session_id")
-    private DiagnosisSession sessions;
+    private DiagnosisSession session;
 
     @Column(name = "fact_name",nullable = false,length = 100)
     private String factName;
