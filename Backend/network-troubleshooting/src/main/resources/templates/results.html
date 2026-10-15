@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Diagnosis Results | Network Troubleshooting</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --navy: #0f172a;
+            --text: #334155;
+            --muted: #64748b;
+            --background: #f8fafc;
+            --border: #e2e8f0;
+            --success: #15803d;
+            --danger: #b91c1c;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(900px, 92%);
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar {
+            min-height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 11px;
+            font-size: 22px;
+        }
+
+        .back-link {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .page-heading {
+            text-align: center;
+            padding: 42px 0 28px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            background: #eff6ff;
+            color: var(--primary-dark);
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: 6px 13px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .page-heading h1 {
+            color: var(--navy);
+            font-size: clamp(28px, 4vw, 38px);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+        }
+
+        .status-label {
+            display: inline-block;
+            color: var(--success);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .diagnosis-title {
+            color: var(--navy);
+            font-size: clamp(22px, 3vw, 29px);
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            margin-bottom: 10px;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .section {
+            margin-top: 28px;
+        }
+
+        .section h2 {
+            color: var(--navy);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .rule-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .rule-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff;
+        }
+
+        .rule-card h3 {
+            color: var(--navy);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .rule-description {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .rule-card h4 {
+            color: var(--navy);
+            font-size: 14px;
+            margin: 15px 0 9px;
+        }
+
+        .condition-list,
+        .conclusion-list,
+        .recommendation-list {
+            padding-left: 20px;
+        }
+
+        .condition-list li,
+        .conclusion-list li,
+        .recommendation-list li {
+            font-size: 14px;
+            margin-bottom: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .condition-status {
+            font-weight: 700;
+        }
+
+        .condition-status.matched {
+            color: var(--success);
+        }
+
+        .condition-status.not-matched {
+            color: var(--danger);
+        }
+
+        .notice {
+            padding: 14px 16px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            color: #1e40af;
+            font-size: 14px;
+        }
+
+        .error {
+            padding: 14px 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            color: var(--danger);
+            font-size: 14px;
+        }
+
+        .loading {
+            padding: 25px 0;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .button {
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 17px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: white;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .button-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            background: white;
+            padding: 23px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                min-height: 65px;
+            }
+
+            .brand {
+                font-size: 13px;
+            }
+
+            .brand-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .back-link {
+                font-size: 12px;
+            }
+
+            .page-heading {
+                padding: 32px 0 22px;
+            }
+
+            .result-card {
+                padding: 20px 16px;
+                margin-bottom: 35px;
+            }
+
+            .rule-card {
+                padding: 14px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container navbar">
+        <a href="/" class="brand">
+            <span class="brand-icon">⌘</span>
+            <span>Network Troubleshooting</span>
+        </a>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <span class="eyebrow">DIAGNOSIS REPORT</span>
+        <h1>Your Network Diagnosis</h1>
+        <p>Review the diagnosis and the rules that matched your answers.</p>
+    </section>
+
+    <section class="result-card">
+        <div id="loading" class="loading">Loading diagnosis results...</div>
+
+        <div id="errorMessage" class="error" hidden></div>
+
+        <div id="resultContent" hidden>
+            <span class="status-label">Diagnosis Complete</span>
+
+            <h2 class="diagnosis-title" id="diagnosisTitle">
+                Diagnosis Result
+            </h2>
+
+            <p class="muted" id="sessionInfo"></p>
+
+            <section class="section">
+                <h2>Matched Rules</h2>
+                <div id="matchedRules" class="rule-list"></div>
+            </section>
+
+            <section class="section">
+                <h2>Diagnosis Explanation</h2>
+                <p class="muted" id="explanationText"></p>
+            </section>
+
+            <section class="section">
+                <h2>Recommended Actions</h2>
+                <ul id="recommendedActions" class="recommendation-list"></ul>
+            </section>
+
+            <div class="actions">
+                <a href="/diagnosis" class="button button-primary">
+                    Start a New Diagnosis
+                </a>
+
+                <a href="/" class="button">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        Network Troubleshooting Expert System
+    </div>
+</footer>
+
+<script th:inline="javascript">
+    const sessionId = /*[[${sessionId}]]*/ 0;
+    const API_BASE_URL = "/api";
+
+    const loading = document.getElementById("loading");
+    const errorMessage = document.getElementById("errorMessage");
+    const resultContent = document.getElementById("resultContent");
+
+    async function requestJson(url) {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Request failed with HTTP ${response.status}`);
+        }
+
+        return response.json();
+    }
+
+    function addTextElement(parent, tagName, text, className = "") {
+        const element = document.createElement(tagName);
+        element.textContent = text;
+
+        if (className) {
+            element.className = className;
+        }
+
+        parent.appendChild(element);
+        return element;
+    }
+
+    function renderRules(rules) {
+        const container = document.getElementById("matchedRules");
+        container.replaceChildren();
+
+        if (!Array.isArray(rules) || rules.length === 0) {
+            addTextElement(
+                container,
+                "p",
+                "No rules were recorded as matched for this session.",
+                "muted"
+            );
+            return;
+        }
+
+        rules.forEach(rule => {
+            const card = document.createElement("article");
+            card.className = "rule-card";
+
+            addTextElement(card, "h3", rule.ruleName || "Unnamed Rule");
+
+            if (rule.description) {
+                addTextElement(
+                    card,
+                    "p",
+                    rule.description,
+                    "rule-description"
+                );
+            }
+
+            addTextElement(card, "h4", "Conditions");
+
+            const conditionsList = document.createElement("ul");
+            conditionsList.className = "condition-list";
+
+            (rule.conditions || []).forEach(condition => {
+                const actualValue = condition.actualValue == null
+                    ? "Not provided"
+                    : condition.actualValue;
+
+                const item = document.createElement("li");
+
+                item.textContent =
+                    `${condition.factName}: actual = ${actualValue}, ` +
+                    `expected ${condition.operator} ${condition.expectedValue} — `;
+
+                const status = document.createElement("span");
+                status.className = "condition-status " +
+                    (condition.matched ? "matched" : "not-matched");
+                status.textContent = condition.matched
+                    ? "Matched"
+                    : "Not matched";
+
+                item.appendChild(status);
+                conditionsList.appendChild(item);
+            });
+
+            card.appendChild(conditionsList);
+
+            const conclusions = rule.conclusions || [];
+
+            if (conclusions.length > 0) {
+                addTextElement(card, "h4", "Rule Conclusions");
+
+                const conclusionsList = document.createElement("ul");
+                conclusionsList.className = "conclusion-list";
+
+                conclusions.forEach(conclusion => {
+                    addTextElement(
+                        conclusionsList,
+                        "li",
+                        `${conclusion.name}: ${conclusion.value}`
+                    );
+                });
+
+                card.appendChild(conclusionsList);
+            }
+
+            container.appendChild(card);
+        });
+    }
+
+    function renderRecommendations(rules, diagnosis) {
+        const list = document.getElementById("recommendedActions");
+        list.replaceChildren();
+
+        const names = (rules || [])
+            .map(rule => (rule.ruleName || "").toLowerCase());
+
+        const actions = [];
+
+        if (names.some(name => name.includes("wifi not connected"))) {
+            actions.push(
+                "Check that Wi-Fi is enabled on your device and reconnect to the correct network."
+            );
+        }
+
+        if (names.some(name => name.includes("router is powered off"))) {
+            actions.push(
+                "Check the router's power cable and power supply, then turn it on."
+            );
+        }
+
+        if (names.some(name => name.includes("device did not obtain ip"))) {
+            actions.push(
+                "Check the device's IP configuration and whether the router's DHCP service is enabled."
+            );
+        }
+
+        if (names.some(name => name.includes("dns resolution failure"))) {
+            actions.push(
+                "Check your DNS settings and test whether domain names resolve correctly."
+            );
+        }
+
+        if (names.some(name => name.includes("wifi connected but no internet"))) {
+            actions.push(
+                "Restart the router and check its Internet or WAN indicator."
+            );
+            actions.push(
+                "If internet access remains unavailable, contact your Internet Service Provider."
+            );
+        }
+
+        if (actions.length === 0) {
+            if ((diagnosis || "").toLowerCase().includes("no matching diagnosis")) {
+                actions.push(
+                    "No existing rule matched these answers. Verify the answers or review the expert system's rule set."
+                );
+            } else {
+                actions.push(
+                    "Verify the network settings related to the reported issue and run another diagnosis if needed."
+                );
+            }
+        }
+
+        actions.forEach(action => addTextElement(list, "li", action));
+    }
+
+    async function loadResults() {
+        try {
+            const explanation = await requestJson(
+                `${API_BASE_URL}/diagnosis-sessions/${sessionId}/explanation`
+            );
+
+            document.getElementById("diagnosisTitle").textContent =
+                explanation.diagnosis || "No diagnosis available";
+
+            document.getElementById("sessionInfo").textContent =
+                `Diagnosis Session ID: ${explanation.sessionId ?? sessionId}`;
+
+            document.getElementById("explanationText").textContent =
+                explanation.explanation ||
+                "No additional explanation was returned.";
+
+            const rules = explanation.matchedRules || [];
+
+            renderRules(rules);
+            renderRecommendations(rules, explanation.diagnosis);
+
+            loading.hidden = true;
+            resultContent.hidden = false;
+
+        } catch (error) {
+            console.error("Could not load diagnosis results:", error);
+
+            loading.hidden = true;
+            errorMessage.hidden = false;
+            errorMessage.textContent =
+                "Could not load this diagnosis. Please check the session ID " +
+                "and make sure the Spring Boot application is running.";
+        }
+    }
+
+    loadResults();
+</script>
+
+</body>
+</html>
