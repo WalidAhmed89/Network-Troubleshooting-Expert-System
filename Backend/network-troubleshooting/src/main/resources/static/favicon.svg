@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="NetPath">
+  <line x1="16" y1="7"  x2="6"  y2="25" stroke="#14b8a6" stroke-width="1.6" stroke-linecap="round" opacity="0.70"/>
+  <line x1="16" y1="7"  x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6" stroke-linecap="round" opacity="0.70"/>
+  <line x1="6"  y1="25" x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6" stroke-linecap="round" opacity="0.70"/>
+  <circle cx="6"  cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+  <circle cx="26" cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+  <circle cx="16" cy="7"  r="5.5" fill="#14b8a6"/>
+  <circle cx="16" cy="7"  r="2.5" fill="#0c121e"/>
+</svg>

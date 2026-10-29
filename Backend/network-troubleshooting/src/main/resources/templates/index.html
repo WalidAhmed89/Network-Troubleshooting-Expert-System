@@ -4,473 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Network Troubleshooting | Expert System</title>
+    <title>NetPath | Network Troubleshooting Expert System</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --navy: #0f172a;
-            --text: #334155;
-            --muted: #64748b;
-            --background: #f8fafc;
-            --border: #e2e8f0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .container {
-            width: min(1120px, 90%);
-            margin: 0 auto;
-        }
-
-        /* Navigation */
-
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .navbar {
-            min-height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--navy);
-            font-size: 17px;
-            font-weight: 700;
-        }
-
-        .brand-icon {
-            width: 42px;
-            height: 42px;
-            display: grid;
-            place-items: center;
-            border-radius: 12px;
-            background: #eff6ff;
-            color: var(--primary);
-            font-size: 23px;
-        }
-
-        .nav-link {
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .nav-link:hover {
-            color: var(--primary);
-        }
-
-        /* Hero */
-
-        .hero {
-            padding: 85px 0 75px;
-            background:
-                    radial-gradient(
-                            circle at 85% 20%,
-                            rgba(37, 99, 235, 0.10),
-                            transparent 32%
-                    ),
-                    var(--background);
-        }
-
-        .hero-content {
-            max-width: 790px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border: 1px solid #bfdbfe;
-            border-radius: 999px;
-            background: #eff6ff;
-            color: var(--primary-dark);
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 24px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-        }
-
-        .hero h1 {
-            color: var(--navy);
-            font-size: clamp(36px, 5vw, 58px);
-            line-height: 1.15;
-            letter-spacing: -1.5px;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 span {
-            color: var(--primary);
-        }
-
-        .hero-description {
-            max-width: 660px;
-            margin: 0 auto;
-            color: var(--muted);
-            font-size: 17px;
-            line-height: 1.9;
-        }
-
-        .hero-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-top: 32px;
-        }
-
-        .button {
-            min-height: 50px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 0 24px;
-            border: 1px solid transparent;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            transition: 0.2s ease;
-        }
-
-        .button-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 5px 14px rgba(37, 99, 235, 0.20);
-        }
-
-        .button-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .button-secondary {
-            background: white;
-            color: var(--text);
-            border-color: var(--border);
-        }
-
-        .button-secondary:hover {
-            border-color: #93c5fd;
-            color: var(--primary);
-        }
-
-        /* Features */
-
-        .features {
-            padding: 15px 0 85px;
-        }
-
-        .section-heading {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .section-heading h2 {
-            color: var(--navy);
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-
-        .section-heading p {
-            color: var(--muted);
-            font-size: 15px;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 22px;
-        }
-
-        .feature-card {
-            padding: 28px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            transition: 0.2s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: #bfdbfe;
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
-        }
-
-        .feature-icon {
-            width: 50px;
-            height: 50px;
-            display: grid;
-            place-items: center;
-            margin-bottom: 20px;
-            border-radius: 13px;
-            background: #eff6ff;
-            font-size: 25px;
-        }
-
-        .feature-card h3 {
-            color: var(--navy);
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.8;
-        }
-
-        /* Call to action */
-
-        .cta {
-            padding: 0 0 80px;
-        }
-
-        .cta-card {
-            padding: 42px 30px;
-            border-radius: 20px;
-            background: var(--navy);
-            text-align: center;
-            color: white;
-        }
-
-        .cta-card h2 {
-            font-size: 27px;
-            margin-bottom: 12px;
-        }
-
-        .cta-card p {
-            max-width: 600px;
-            margin: 0 auto;
-            color: #cbd5e1;
-            font-size: 15px;
-        }
-
-        .cta-card .button {
-            margin-top: 24px;
-            background: white;
-            color: var(--navy);
-        }
-
-        .cta-card .button:hover {
-            background: #dbeafe;
-        }
-
-        /* Footer */
-
-        footer {
-            padding: 25px 0;
-            border-top: 1px solid var(--border);
-            background: white;
-            text-align: center;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        /* Responsive layout */
-
-        @media (max-width: 800px) {
-            .hero {
-                padding: 65px 0;
-            }
-
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-card {
-                padding: 24px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .brand {
-                font-size: 13px;
-            }
-
-            .brand-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 20px;
-            }
-
-            .hero h1 {
-                letter-spacing: -0.8px;
-            }
-
-            .hero-description {
-                font-size: 15px;
-            }
-
-            .hero-actions {
-                flex-direction: column;
-            }
-
-            .hero-actions .button {
-                width: 100%;
-            }
-
-            .section-heading h2,
-            .cta-card h2 {
-                font-size: 24px;
-            }
-
-            .cta-card {
-                padding: 32px 22px;
-            }
-        }
-    </style>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}" href="/favicon.svg">
+    <link rel="stylesheet" th:href="@{/style.css}" href="/style.css">
 </head>
 
 <body>
 
-<header>
+<header class="site-header">
     <div class="container navbar">
-        <a href="/" class="brand">
-            <span class="brand-icon">⌘</span>
-            <span>Network Troubleshooting</span>
+        <a href="/" class="brand" aria-label="NetPath home">
+            <svg class="brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none"
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <line x1="16" y1="7"  x2="6"  y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <line x1="16" y1="7"  x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <line x1="6"  y1="25" x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <circle cx="6"  cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+                <circle cx="26" cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+                <circle cx="16" cy="7"  r="5.5" fill="#14b8a6"/>
+                <circle cx="16" cy="7"  r="2.5" fill="#0c121e"/>
+            </svg>
+            <span class="brand-name">Net<em>Path</em></span>
         </a>
 
-        <a href="/diagnosis" class="nav-link">
-            Start Diagnosis →
-        </a>
+        <a href="/diagnosis" class="nav-link">Start Diagnosis →</a>
     </div>
 </header>
 
 <main>
+
+    <!-- Hero -->
     <section class="hero">
         <div class="container hero-content">
 
-            <div class="eyebrow">
-                <span class="status-dot"></span>
-                Rule-Based Expert System
-            </div>
+            <div class="eyebrow">Rule-Based Expert System</div>
 
             <h1>
                 Network Diagnosis,<br>
-                <span>Made Simple.</span>
+                <em>Made Precise.</em>
             </h1>
 
-            <p class="hero-description">
-                Identify possible network connectivity problems through
-                a guided troubleshooting process. Answer a few simple
-                questions and let our rule-based expert system help
-                identify the possible cause.
+            <p class="hero-sub">
+                Identify the likely cause of your connectivity problem through a
+                structured, guided process. Answer five questions about your network
+                and let the rule-based expert system evaluate your answers.
             </p>
 
             <div class="hero-actions">
-                <a href="/diagnosis" class="button button-primary">
-                    Start Diagnosis <span>→</span>
+                <a href="/diagnosis" class="btn btn--primary btn--lg">
+                    Start Diagnosis
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </a>
-
-                <a href="#features" class="button button-secondary">
-                    Explore Features
+                <a href="#how-it-works" class="btn btn--secondary btn--lg">
+                    How It Works
                 </a>
             </div>
 
         </div>
     </section>
 
-    <section class="features" id="features">
+    <!-- How it works -->
+    <section class="steps" id="how-it-works">
         <div class="container">
 
-            <div class="section-heading">
-                <h2>How It Helps</h2>
-                <p>A structured approach to identifying common network issues.</p>
+            <div class="steps-heading">
+                <h2>How It Works</h2>
+                <p>A three-step approach to identifying common network problems.</p>
             </div>
 
-            <div class="feature-grid">
+            <div class="step-grid">
 
-                <article class="feature-card">
-                    <div class="feature-icon">🔎</div>
-                    <h3>Guided Diagnosis</h3>
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <div class="step-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="3"
+                                  stroke="currentColor" stroke-width="1.6"/>
+                            <path d="M7 8h10M7 12h7M7 16h5"
+                                  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Guided Questions</h3>
                     <p>
-                        Follow a sequence of simple questions to describe
-                        your network problem without technical complexity.
+                        Answer five straightforward Yes/No questions about your
+                        current network state — no technical expertise required.
                     </p>
-                </article>
+                </div>
 
-                <article class="feature-card">
-                    <div class="feature-icon">⚙️</div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <div class="step-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                            <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.6"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                        </svg>
+                    </div>
                     <h3>Rule-Based Reasoning</h3>
                     <p>
-                        The expert system evaluates your answers against
-                        predefined rules to identify matching conditions.
+                        The inference engine evaluates your answers against a
+                        set of predefined diagnostic rules, ordered by priority.
                     </p>
-                </article>
+                </div>
 
-                <article class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>Clear Explanations</h3>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <div class="step-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="3" y="3" width="18" height="18" rx="3"
+                                  stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                    </div>
+                    <h3>Clear Results</h3>
                     <p>
-                        Review the resulting diagnosis and the matching
-                        rules that support the system's conclusion.
+                        Review the diagnosis, the matched rules, the supporting
+                        conditions, and the recommended corrective actions.
                     </p>
-                </article>
+                </div>
 
             </div>
+
         </div>
     </section>
 
+    <!-- CTA -->
     <section class="cta">
         <div class="container">
             <div class="cta-card">
                 <h2>Ready to Troubleshoot Your Network?</h2>
-
                 <p>
-                    Start a diagnosis session and answer a few questions
-                    to investigate your connectivity problem.
+                    Start a diagnosis session, answer five questions about your
+                    connection, and get a structured analysis in seconds.
                 </p>
-
-                <a href="/diagnosis" class="button">
+                <a href="/diagnosis" class="btn btn--lg">
                     Begin Diagnosis →
                 </a>
             </div>
         </div>
     </section>
+
 </main>
 
-<footer>
+<footer class="site-footer">
     <div class="container">
-        Network Troubleshooting Expert System
+        NetPath &mdash; Network Troubleshooting Expert System
     </div>
 </footer>
 
