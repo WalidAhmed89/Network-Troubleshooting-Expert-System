@@ -4,395 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Diagnosis Results | Network Troubleshooting</title>
+    <title>Diagnosis Results | NetPath</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --navy: #0f172a;
-            --text: #334155;
-            --muted: #64748b;
-            --background: #f8fafc;
-            --border: #e2e8f0;
-            --success: #15803d;
-            --danger: #b91c1c;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .container {
-            width: min(900px, 92%);
-            margin: 0 auto;
-        }
-
-        header {
-            background: white;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .navbar {
-            min-height: 72px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--navy);
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            display: grid;
-            place-items: center;
-            background: #eff6ff;
-            color: var(--primary);
-            border-radius: 11px;
-            font-size: 22px;
-        }
-
-        .back-link {
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .back-link:hover {
-            color: var(--primary);
-        }
-
-        .page-heading {
-            text-align: center;
-            padding: 42px 0 28px;
-        }
-
-        .eyebrow {
-            display: inline-block;
-            background: #eff6ff;
-            color: var(--primary-dark);
-            border: 1px solid #bfdbfe;
-            border-radius: 999px;
-            padding: 6px 13px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .page-heading h1 {
-            color: var(--navy);
-            font-size: clamp(28px, 4vw, 38px);
-            line-height: 1.2;
-            margin-bottom: 12px;
-        }
-
-        .page-heading p {
-            color: var(--muted);
-            font-size: 15px;
-        }
-
-        .result-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 30px;
-            margin-bottom: 50px;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
-        }
-
-        .status-label {
-            display: inline-block;
-            color: var(--success);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .diagnosis-title {
-            color: var(--navy);
-            font-size: clamp(22px, 3vw, 29px);
-            line-height: 1.35;
-            overflow-wrap: anywhere;
-            margin-bottom: 10px;
-        }
-
-        .muted {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .section {
-            margin-top: 28px;
-        }
-
-        .section h2 {
-            color: var(--navy);
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-
-        .rule-list {
-            display: grid;
-            gap: 14px;
-        }
-
-        .rule-card {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 18px;
-            background: #fff;
-        }
-
-        .rule-card h3 {
-            color: var(--navy);
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .rule-description {
-            color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 14px;
-        }
-
-        .rule-card h4 {
-            color: var(--navy);
-            font-size: 14px;
-            margin: 15px 0 9px;
-        }
-
-        .condition-list,
-        .conclusion-list,
-        .recommendation-list {
-            padding-left: 20px;
-        }
-
-        .condition-list li,
-        .conclusion-list li,
-        .recommendation-list li {
-            font-size: 14px;
-            margin-bottom: 8px;
-            overflow-wrap: anywhere;
-        }
-
-        .condition-status {
-            font-weight: 700;
-        }
-
-        .condition-status.matched {
-            color: var(--success);
-        }
-
-        .condition-status.not-matched {
-            color: var(--danger);
-        }
-
-        .notice {
-            padding: 14px 16px;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 10px;
-            color: #1e40af;
-            font-size: 14px;
-        }
-
-        .error {
-            padding: 14px 16px;
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            color: var(--danger);
-            font-size: 14px;
-        }
-
-        .loading {
-            padding: 25px 0;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 30px;
-        }
-
-        .button {
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 11px 17px;
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            background: white;
-            color: var(--text);
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .button-primary {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-        .button-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            color: white;
-        }
-
-        footer {
-            border-top: 1px solid var(--border);
-            background: white;
-            padding: 23px 0;
-            text-align: center;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .navbar {
-                min-height: 65px;
-            }
-
-            .brand {
-                font-size: 13px;
-            }
-
-            .brand-icon {
-                width: 34px;
-                height: 34px;
-            }
-
-            .back-link {
-                font-size: 12px;
-            }
-
-            .page-heading {
-                padding: 32px 0 22px;
-            }
-
-            .result-card {
-                padding: 20px 16px;
-                margin-bottom: 35px;
-            }
-
-            .rule-card {
-                padding: 14px;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-
-            .button {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}" href="/favicon.svg">
+    <link rel="stylesheet" th:href="@{/style.css}" href="/style.css">
 </head>
 
 <body>
 
-<header>
-    <div class="container navbar">
-        <a href="/" class="brand">
-            <span class="brand-icon">⌘</span>
-            <span>Network Troubleshooting</span>
+<header class="site-header">
+    <div class="container--narrow navbar">
+        <a href="/" class="brand" aria-label="NetPath home">
+            <svg class="brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none"
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <line x1="16" y1="7"  x2="6"  y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <line x1="16" y1="7"  x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <line x1="6"  y1="25" x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <circle cx="6"  cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+                <circle cx="26" cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+                <circle cx="16" cy="7"  r="5.5" fill="#14b8a6"/>
+                <circle cx="16" cy="7"  r="2.5" fill="#0c121e"/>
+            </svg>
+            <span class="brand-name">Net<em>Path</em></span>
         </a>
 
-        <a href="/" class="back-link">← Back to Home</a>
+        <a href="/" class="nav-link">← Back to Home</a>
     </div>
 </header>
 
-<main class="container">
+<main>
+<div class="container--narrow">
 
     <section class="page-heading">
-        <span class="eyebrow">DIAGNOSIS REPORT</span>
+        <div class="eyebrow">Diagnosis Report</div>
         <h1>Your Network Diagnosis</h1>
         <p>Review the diagnosis and the rules that matched your answers.</p>
     </section>
 
-    <section class="result-card">
-        <div id="loading" class="loading">Loading diagnosis results...</div>
+    <section class="inner-card">
 
-        <div id="errorMessage" class="error" hidden></div>
+        <!-- Loading skeleton -->
+        <div id="loading" class="skeleton-wrap" aria-live="polite" aria-label="Loading diagnosis results">
+            <div class="skeleton-line skeleton-line--title"></div>
+            <div class="skeleton-line skeleton-line--short"></div>
+            <div class="skeleton-line skeleton-line--long" style="margin-top: 24px;"></div>
+            <div class="skeleton-line skeleton-line--medium"></div>
+            <div class="skeleton-line skeleton-line--long"></div>
+            <div class="skeleton-line skeleton-line--short" style="margin-top: 8px;"></div>
+        </div>
 
+        <!-- Error state -->
+        <div id="errorMessage" class="error-box" hidden></div>
+
+        <!-- Result content — populated by JS -->
         <div id="resultContent" hidden>
-            <span class="status-label">Diagnosis Complete</span>
 
-            <h2 class="diagnosis-title" id="diagnosisTitle">
-                Diagnosis Result
-            </h2>
+            <div class="status-badge">Diagnosis Complete</div>
 
-            <p class="muted" id="sessionInfo"></p>
+            <h2 class="diagnosis-title" id="diagnosisTitle">Diagnosis Result</h2>
 
-            <section class="section">
+            <p class="session-meta" id="sessionInfo"></p>
+
+            <!-- Matched rules -->
+            <section class="result-section">
                 <h2>Matched Rules</h2>
                 <div id="matchedRules" class="rule-list"></div>
             </section>
 
-            <section class="section">
+            <!-- Explanation -->
+            <section class="result-section">
                 <h2>Diagnosis Explanation</h2>
-                <p class="muted" id="explanationText"></p>
+                <p class="explanation-text muted" id="explanationText"></p>
             </section>
 
-            <section class="section">
+            <!-- Recommended actions -->
+            <section class="result-section">
                 <h2>Recommended Actions</h2>
                 <ul id="recommendedActions" class="recommendation-list"></ul>
             </section>
 
-            <div class="actions">
-                <a href="/diagnosis" class="button button-primary">
+            <!-- Navigation -->
+            <div class="result-actions">
+                <a href="/diagnosis" class="btn btn--primary">
                     Start a New Diagnosis
                 </a>
-
-                <a href="/" class="button">
+                <a href="/" class="btn btn--secondary">
                     Back to Home
                 </a>
             </div>
-        </div>
-    </section>
 
+        </div><!-- /#resultContent -->
+
+    </section><!-- /.inner-card -->
+
+</div><!-- /.container--narrow -->
 </main>
 
-<footer>
+<footer class="site-footer">
     <div class="container">
-        Network Troubleshooting Expert System
+        NetPath &mdash; Network Troubleshooting Expert System
     </div>
 </footer>
 
@@ -400,8 +113,8 @@
     const sessionId = /*[[${sessionId}]]*/ 0;
     const API_BASE_URL = "/api";
 
-    const loading = document.getElementById("loading");
-    const errorMessage = document.getElementById("errorMessage");
+    const loading       = document.getElementById("loading");
+    const errorMessage  = document.getElementById("errorMessage");
     const resultContent = document.getElementById("resultContent");
 
     async function requestJson(url) {

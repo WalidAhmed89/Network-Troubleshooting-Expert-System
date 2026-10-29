@@ -1,677 +1,109 @@
-```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Network Diagnosis</title>
+    <title>Network Diagnosis | NetPath</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --navy: #0f172a;
-            --text: #334155;
-            --muted: #64748b;
-            --background: #f8fafc;
-            --border: #e2e8f0;
-            --success: #15803d;
-            --danger: #b91c1c;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .container {
-            width: min(900px, 92%);
-            margin: 0 auto;
-        }
-
-        /* Navigation */
-
-        header {
-            background: white;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .navbar {
-            min-height: 72px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--navy);
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            display: grid;
-            place-items: center;
-            background: #eff6ff;
-            color: var(--primary);
-            border-radius: 11px;
-            font-size: 22px;
-        }
-
-        .back-link {
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .back-link:hover {
-            color: var(--primary);
-        }
-
-        /* Page heading */
-
-        .page-heading {
-            text-align: center;
-            padding: 45px 0 28px;
-        }
-
-        .eyebrow {
-            display: inline-block;
-            background: #eff6ff;
-            color: var(--primary-dark);
-            border: 1px solid #bfdbfe;
-            border-radius: 999px;
-            padding: 6px 13px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .page-heading h1 {
-            color: var(--navy);
-            font-size: clamp(28px, 4vw, 38px);
-            line-height: 1.2;
-            margin-bottom: 12px;
-        }
-
-        .page-heading p {
-            color: var(--muted);
-            font-size: 15px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Main card */
-
-        .diagnosis-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 32px;
-            margin-bottom: 55px;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
-        }
-
-        .section-title {
-            color: var(--navy);
-            font-size: 20px;
-            margin-bottom: 6px;
-        }
-
-        .section-description {
-            color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 22px;
-        }
-
-        /* User details */
-
-        .user-fields {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-
-        .field label {
-            display: block;
-            color: var(--text);
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .field input {
-            width: 100%;
-            height: 46px;
-            padding: 0 13px;
-            border: 1px solid #cbd5e1;
-            border-radius: 9px;
-            background: white;
-            color: var(--navy);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .field input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
-        }
-
-        /* Progress */
-
-        .progress-section {
-            margin-bottom: 25px;
-        }
-
-        .progress-labels {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 9px;
-        }
-
-        .progress-track {
-            height: 7px;
-            background: #e2e8f0;
-            border-radius: 999px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            width: 0;
-            height: 100%;
-            background: var(--primary);
-            border-radius: 999px;
-            transition: width 0.2s ease;
-        }
-
-        /* Questions */
-
-        .question-list {
-            display: grid;
-            gap: 15px;
-        }
-
-        .question {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .question.answered {
-            border-color: #93c5fd;
-            background: #f8fbff;
-        }
-
-        .question-top {
-            display: flex;
-            align-items: flex-start;
-            gap: 13px;
-            margin-bottom: 17px;
-        }
-
-        .question-number {
-            flex-shrink: 0;
-            width: 32px;
-            height: 32px;
-            display: grid;
-            place-items: center;
-            background: #eff6ff;
-            color: var(--primary);
-            border-radius: 9px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .question h3 {
-            color: var(--navy);
-            font-size: 15px;
-            line-height: 1.6;
-            padding-top: 4px;
-        }
-
-        .answers {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding-left: 45px;
-        }
-
-        .answer-option {
-            position: relative;
-        }
-
-        .answer-option input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .answer-option label {
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 9px;
-            background: white;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s ease;
-        }
-
-        .answer-option label:hover {
-            border-color: #93c5fd;
-            background: #f8fbff;
-        }
-
-        .answer-option input:checked + label {
-            border-color: var(--primary);
-            background: #eff6ff;
-            color: var(--primary-dark);
-            box-shadow: 0 0 0 1px var(--primary);
-        }
-
-        .answer-option input:focus-visible + label {
-            outline: 3px solid #bfdbfe;
-            outline-offset: 3px;
-        }
-
-        /* Actions and messages */
-
-        .form-actions {
-            margin-top: 26px;
-        }
-
-        .submit-button {
-            width: 100%;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border: none;
-            border-radius: 10px;
-            background: var(--primary);
-            color: white;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .submit-button:hover {
-            background: var(--primary-dark);
-        }
-
-        .submit-button:disabled {
-            opacity: 0.65;
-            cursor: wait;
-        }
-
-        .message {
-            display: none;
-            margin-top: 18px;
-            padding: 13px 15px;
-            border-radius: 9px;
-            font-size: 14px;
-            overflow-wrap: anywhere;
-        }
-
-        .message.error {
-            display: block;
-            color: var(--danger);
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-        }
-
-        .message.info {
-            display: block;
-            color: #1d4ed8;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-        }
-
-        /* Result */
-
-        .result-panel {
-            display: none;
-            margin-top: 28px;
-            padding: 24px;
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-        }
-
-        .result-panel.visible {
-            display: block;
-        }
-
-        .result-label {
-            color: var(--success);
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .result-panel h2 {
-            color: var(--navy);
-            font-size: 23px;
-            overflow-wrap: anywhere;
-            margin-bottom: 12px;
-        }
-
-        .result-panel p {
-            color: var(--muted);
-            font-size: 14px;
-            overflow-wrap: anywhere;
-            margin-bottom: 12px;
-        }
-
-        .result-panel h3 {
-            color: var(--navy);
-            font-size: 15px;
-            margin: 22px 0 10px;
-        }
-
-        .result-panel ul {
-            padding-left: 20px;
-            color: var(--text);
-            font-size: 14px;
-        }
-
-        .result-panel li {
-            margin-bottom: 7px;
-            overflow-wrap: anywhere;
-        }
-
-        .new-diagnosis-button {
-            margin-top: 22px;
-            padding: 11px 17px;
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            background: white;
-            color: var(--text);
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .new-diagnosis-button:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Detailed diagnosis results */
-
-        .result-section {
-            margin-top: 24px;
-        }
-
-        .rule-list {
-            display: grid;
-            gap: 14px;
-        }
-
-        .rule-card {
-            padding: 18px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-        }
-
-        .rule-card h4 {
-            color: var(--navy);
-            font-size: 15px;
-            margin-bottom: 8px;
-        }
-
-        .rule-description {
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .condition-list {
-            display: grid;
-            gap: 8px;
-            list-style: none;
-            padding: 0;
-        }
-
-        .condition-item {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 8px;
-            padding: 10px 12px;
-            background: var(--background);
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .condition-status {
-            font-weight: 700;
-        }
-
-        .condition-status.matched {
-            color: var(--success);
-        }
-
-        .condition-status.not-matched {
-            color: var(--danger);
-        }
-
-        .conclusion-list {
-            margin: 12px 0 0 18px;
-            font-size: 13px;
-        }
-
-        .recommendation-list {
-            padding-left: 20px;
-            font-size: 14px;
-        }
-
-        .recommendation-list li {
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 600px) {
-            .rule-card {
-                padding: 14px;
-            }
-
-            .condition-item {
-                flex-direction: column;
-            }
-        }
-
-        /* Footer */
-
-        footer {
-            border-top: 1px solid var(--border);
-            background: white;
-            padding: 23px 0;
-            text-align: center;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .navbar {
-                min-height: 65px;
-            }
-
-            .brand {
-                font-size: 13px;
-            }
-
-            .brand-icon {
-                width: 34px;
-                height: 34px;
-            }
-
-            .back-link {
-                font-size: 12px;
-            }
-
-            .page-heading {
-                padding: 35px 0 24px;
-            }
-
-            .diagnosis-card {
-                padding: 21px 16px;
-                margin-bottom: 35px;
-            }
-
-            .user-fields {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-
-            .question {
-                padding: 15px;
-            }
-
-            .question-top {
-                gap: 10px;
-            }
-
-            .question h3 {
-                font-size: 14px;
-            }
-
-            .answers {
-                padding-left: 0;
-                gap: 9px;
-            }
-
-            .answer-option label {
-                font-size: 13px;
-            }
-
-            .result-panel {
-                padding: 18px;
-            }
-        }
-    </style>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}" href="/favicon.svg">
+    <link rel="stylesheet" th:href="@{/style.css}" href="/style.css">
 </head>
 
 <body>
 
-<header>
-    <div class="container navbar">
-        <a href="/" class="brand">
-            <span class="brand-icon">⌘</span>
-            <span>Network Troubleshooting</span>
+<header class="site-header">
+    <div class="container--narrow navbar">
+        <a href="/" class="brand" aria-label="NetPath home">
+            <svg class="brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none"
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <line x1="16" y1="7"  x2="6"  y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <line x1="16" y1="7"  x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <line x1="6"  y1="25" x2="26" y2="25" stroke="#14b8a6" stroke-width="1.6"
+                      stroke-linecap="round" opacity="0.70"/>
+                <circle cx="6"  cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+                <circle cx="26" cy="25" r="3.5" fill="#132633" stroke="#14b8a6" stroke-width="1.6"/>
+                <circle cx="16" cy="7"  r="5.5" fill="#14b8a6"/>
+                <circle cx="16" cy="7"  r="2.5" fill="#0c121e"/>
+            </svg>
+            <span class="brand-name">Net<em>Path</em></span>
         </a>
 
-        <a href="/" class="back-link">← Back to Home</a>
+        <a href="/" class="nav-link">← Back to Home</a>
     </div>
 </header>
 
-<main class="container">
+<main>
+<div class="container--narrow diagnosis-wrap">
 
     <section class="page-heading">
-        <span class="eyebrow">NETWORK DIAGNOSTICS</span>
-
+        <div class="eyebrow">Network Diagnostics</div>
         <h1>Let's Diagnose Your Network</h1>
-
         <p>
-            Provide your details and answer five questions about your
-            connection. Our expert system will evaluate your answers
-            and identify any matching network issues.
+            Enter your details and answer five questions about your connection.
+            The expert system will evaluate your answers against its rule set
+            and identify any matching network conditions.
         </p>
     </section>
 
-    <section class="diagnosis-card">
+    <section class="inner-card">
 
-        <h2 class="section-title">Your Information</h2>
-
-        <p class="section-description">
-            Enter your name and email to create a diagnosis session.
-        </p>
+        <h2 class="section-label">Your Information</h2>
+        <p class="section-desc">Enter your name and email to create a diagnosis session.</p>
 
         <form id="diagnosisForm">
 
-            <div class="user-fields">
+            <div class="field-group">
 
                 <div class="field">
                     <label for="userName">Full Name</label>
                     <input
-                            type="text"
-                            id="userName"
-                            name="name"
-                            placeholder="Enter your full name"
-                            autocomplete="name"
-                            required
+                        type="text"
+                        id="userName"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
                     >
                 </div>
 
                 <div class="field">
                     <label for="userEmail">Email Address</label>
                     <input
-                            type="email"
-                            id="userEmail"
-                            name="email"
-                            placeholder="you@example.com"
-                            autocomplete="email"
-                            required
+                        type="email"
+                        id="userEmail"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
                     >
                 </div>
 
             </div>
 
-            <h2 class="section-title">Network Questions</h2>
+            <hr class="form-divider">
 
-            <p class="section-description">
-                Select Yes or No for each question. Answer all five questions
-                based on the current state of your network.
+            <h2 class="section-label">Network Questions</h2>
+            <p class="section-desc">
+                Select Yes or No for each question based on your network's current state.
+                All five questions must be answered before submitting.
             </p>
 
-            <div class="progress-section">
-                <div class="progress-labels">
+            <div class="progress-wrap">
+                <div class="progress-meta">
                     <span>Diagnosis progress</span>
                     <span id="progressText">0 of 5 answered</span>
                 </div>
-
                 <div
-                        class="progress-track"
-                        role="progressbar"
-                        aria-label="Questions answered"
-                        aria-valuemin="0"
-                        aria-valuemax="5"
-                        aria-valuenow="0"
-                        id="progressBar"
+                    class="progress-track"
+                    role="progressbar"
+                    aria-label="Questions answered"
+                    aria-valuemin="0"
+                    aria-valuemax="5"
+                    aria-valuenow="0"
+                    id="progressBar"
                 >
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
@@ -681,114 +113,168 @@
 
                 <article class="question" data-fact="wifi_connected">
                     <div class="question-top">
-                        <span class="question-number">01</span>
+                        <span class="question-num">01</span>
                         <h3>Is your device connected to the Wi-Fi network?</h3>
                     </div>
-
-                    <div class="answers">
-                        <div class="answer-option">
+                    <div class="answer-row">
+                        <div class="answer-opt">
                             <input type="radio" id="wifiYes"
                                    name="wifi_connected" value="true" required>
-                            <label for="wifiYes">✓ Yes</label>
+                            <label for="wifiYes">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 7l3.5 3.5L12 3.5" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Yes
+                            </label>
                         </div>
-
-                        <div class="answer-option">
+                        <div class="answer-opt">
                             <input type="radio" id="wifiNo"
                                    name="wifi_connected" value="false">
-                            <label for="wifiNo">✕ No</label>
+                            <label for="wifiNo">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                No
+                            </label>
                         </div>
                     </div>
                 </article>
 
                 <article class="question" data-fact="internet_working">
                     <div class="question-top">
-                        <span class="question-number">02</span>
+                        <span class="question-num">02</span>
                         <h3>Can you access websites or use the internet?</h3>
                     </div>
-
-                    <div class="answers">
-                        <div class="answer-option">
+                    <div class="answer-row">
+                        <div class="answer-opt">
                             <input type="radio" id="internetYes"
                                    name="internet_working" value="true" required>
-                            <label for="internetYes">✓ Yes</label>
+                            <label for="internetYes">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 7l3.5 3.5L12 3.5" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Yes
+                            </label>
                         </div>
-
-                        <div class="answer-option">
+                        <div class="answer-opt">
                             <input type="radio" id="internetNo"
                                    name="internet_working" value="false">
-                            <label for="internetNo">✕ No</label>
+                            <label for="internetNo">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                No
+                            </label>
                         </div>
                     </div>
                 </article>
 
                 <article class="question" data-fact="router_powered_on">
                     <div class="question-top">
-                        <span class="question-number">03</span>
+                        <span class="question-num">03</span>
                         <h3>Is your router powered on?</h3>
                     </div>
-
-                    <div class="answers">
-                        <div class="answer-option">
+                    <div class="answer-row">
+                        <div class="answer-opt">
                             <input type="radio" id="routerYes"
                                    name="router_powered_on" value="true" required>
-                            <label for="routerYes">✓ Yes</label>
+                            <label for="routerYes">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 7l3.5 3.5L12 3.5" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Yes
+                            </label>
                         </div>
-
-                        <div class="answer-option">
+                        <div class="answer-opt">
                             <input type="radio" id="routerNo"
                                    name="router_powered_on" value="false">
-                            <label for="routerNo">✕ No</label>
+                            <label for="routerNo">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                No
+                            </label>
                         </div>
                     </div>
                 </article>
 
                 <article class="question" data-fact="ip_obtained">
                     <div class="question-top">
-                        <span class="question-number">04</span>
+                        <span class="question-num">04</span>
                         <h3>Has your device obtained an IP address?</h3>
                     </div>
-
-                    <div class="answers">
-                        <div class="answer-option">
+                    <div class="answer-row">
+                        <div class="answer-opt">
                             <input type="radio" id="ipYes"
                                    name="ip_obtained" value="true" required>
-                            <label for="ipYes">✓ Yes</label>
+                            <label for="ipYes">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 7l3.5 3.5L12 3.5" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Yes
+                            </label>
                         </div>
-
-                        <div class="answer-option">
+                        <div class="answer-opt">
                             <input type="radio" id="ipNo"
                                    name="ip_obtained" value="false">
-                            <label for="ipNo">✕ No</label>
+                            <label for="ipNo">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                No
+                            </label>
                         </div>
                     </div>
                 </article>
 
                 <article class="question" data-fact="dns_working">
                     <div class="question-top">
-                        <span class="question-number">05</span>
+                        <span class="question-num">05</span>
                         <h3>Is DNS resolution working on your device?</h3>
                     </div>
-
-                    <div class="answers">
-                        <div class="answer-option">
+                    <div class="answer-row">
+                        <div class="answer-opt">
                             <input type="radio" id="dnsYes"
                                    name="dns_working" value="true" required>
-                            <label for="dnsYes">✓ Yes</label>
+                            <label for="dnsYes">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 7l3.5 3.5L12 3.5" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Yes
+                            </label>
                         </div>
-
-                        <div class="answer-option">
+                        <div class="answer-opt">
                             <input type="radio" id="dnsNo"
                                    name="dns_working" value="false">
-                            <label for="dnsNo">✕ No</label>
+                            <label for="dnsNo">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor"
+                                          stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                No
+                            </label>
                         </div>
                     </div>
                 </article>
 
-            </div>
+            </div><!-- /.question-list -->
 
             <div class="form-actions">
-                <button type="submit" class="submit-button" id="submitButton">
-                    Run Network Diagnosis <span>→</span>
+                <button type="submit" class="btn btn--primary btn--full" id="submitButton">
+                    Run Network Diagnosis
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </button>
             </div>
 
@@ -796,11 +282,13 @@
 
         </form>
 
+        <!-- Result panel — populated by JS if inline display is triggered.
+             This section is kept to support the newDiagnosisButton event listener. -->
         <section class="result-panel" id="resultPanel" aria-live="polite">
             <div class="result-label">Diagnosis Complete</div>
 
             <h2 id="diagnosisTitle">Diagnosis Result</h2>
-            <p id="diagnosisDescription"></p>
+            <p id="diagnosisDescription" class="muted"></p>
 
             <div class="result-section">
                 <h3>Matched Rules</h3>
@@ -809,7 +297,7 @@
 
             <div class="result-section">
                 <h3>Diagnosis Explanation</h3>
-                <p id="explanationText"></p>
+                <p id="explanationText" class="muted"></p>
             </div>
 
             <div class="result-section">
@@ -818,35 +306,36 @@
             </div>
 
             <button
-                    type="button"
-                    class="new-diagnosis-button"
-                    id="newDiagnosisButton">
+                type="button"
+                class="new-diagnosis-button"
+                id="newDiagnosisButton">
                 Start a New Diagnosis
             </button>
         </section>
 
-    </section>
+    </section><!-- /.inner-card -->
 
+</div><!-- /.container--narrow -->
 </main>
 
-<footer>
+<footer class="site-footer">
     <div class="container">
-        Network Troubleshooting Expert System
+        NetPath &mdash; Network Troubleshooting Expert System
     </div>
 </footer>
 
 <script>
     const API_BASE_URL = "/api";
 
-    const form = document.getElementById("diagnosisForm");
+    const form         = document.getElementById("diagnosisForm");
     const submitButton = document.getElementById("submitButton");
-    const message = document.getElementById("message");
+    const message      = document.getElementById("message");
 
     const progressText = document.getElementById("progressText");
     const progressFill = document.getElementById("progressFill");
-    const progressBar = document.getElementById("progressBar");
+    const progressBar  = document.getElementById("progressBar");
 
-    const resultPanel = document.getElementById("resultPanel");
+    const resultPanel  = document.getElementById("resultPanel");
 
     const factNames = [
         "wifi_connected",
@@ -1109,7 +598,7 @@
             return;
         }
 
-        const name = document.getElementById("userName").value.trim();
+        const name  = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
 
         const facts = factNames.map(factName => {
@@ -1124,7 +613,7 @@
         });
 
         submitButton.disabled = true;
-        submitButton.textContent = "Running Diagnosis...";
+        submitButton.innerHTML = 'Submitting&hellip;';
 
         try {
             showMessage("Creating your diagnosis session...", "info");
@@ -1171,7 +660,10 @@
         } finally {
             submitButton.disabled = false;
             submitButton.innerHTML =
-                'Run Network Diagnosis <span>→</span>';
+                'Run Network Diagnosis ' +
+                '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                '<path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>' +
+                '</svg>';
         }
     });
 
@@ -1193,4 +685,3 @@
 
 </body>
 </html>
-```
